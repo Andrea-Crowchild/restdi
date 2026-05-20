@@ -6,7 +6,7 @@ from datetime import datetime
 from fsrs import Scheduler, Card, Rating, ReviewLog, State, review_log
 import json
 
-CONFIG_FILE = os.path.expanduser("~/Code/python/restdi/restdi.toml")
+CONFIG_FILE = os.path.expanduser("~/Code/python/restdi/restdi.json")
 
 
 # TODO: Create a secondary file and populate it with the logic that
@@ -30,6 +30,7 @@ def all():
     pass
 
 
+# TODO: Get new files working
 @cli.command()
 def new():
     pass
