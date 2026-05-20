@@ -48,7 +48,15 @@ def new():
 @click.argument("nametag")
 @click.argument("description")
 def add(nametag, description):
-    pass
+    with open(CONFIG_FILE, "r") as f:
+        cards = {
+            name: restdi_card.RestdiCard.from_dict(data)
+            for name, data in json.load(f).items()
+        }
+    cards[nametag] = restdi_card.RestdiCard(nametag, description)
+
+    with open(CONFIG_FILE, "w") as f:
+        json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
 
 @cli.command()
@@ -68,7 +76,16 @@ def edit(nametag, description):
 @cli.command()
 @click.argument("nametag")
 def remove(nametag):
-    pass
+    with open(CONFIG_FILE, "r") as f:
+        cards = {
+            name: restdi_card.RestdiCard.from_dict(data)
+            for name, data in json.load(f).items()
+        }
+
+    cards.pop(nametag)
+
+    with open(CONFIG_FILE, "w") as f:
+        json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
 
 # TODO: Write a function that automatically purges the list of max mastery items.
