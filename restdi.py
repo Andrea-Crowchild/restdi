@@ -17,8 +17,6 @@ CONFIG_FILE = os.path.expanduser("~/Code/python/restdi/restdi.json")
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-@click.argument("nametag", required=False, default=None)
-@click.argument("rating", required=False, default=None, type=int)
 def cli(ctx):
     pass
 
@@ -27,19 +25,36 @@ def cli(ctx):
 # TODO: regardless of date
 @cli.command()
 def all():
-    pass
+    with open(CONFIG_FILE, "r") as f:
+        cards = {
+            name: restdi_card.RestdiCard.from_dict(data)
+            for name, data in json.load(f).items()
+        }
+
+    for name, card in cards.items():
+        print(f"{card.nametag} : {card.description} : {card.card.due.date()}")
 
 
 # TODO: Get new files working
 @cli.command()
 def new():
-    pass
+    cards = {"test_one": restdi_card.RestdiCard("test_one", "description one of many")}
+    # cards = {}
+    with open(CONFIG_FILE, "w") as f:
+        json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
 
 @cli.command()
 @click.argument("nametag")
 @click.argument("description")
 def add(nametag, description):
+    pass
+
+
+@cli.command()
+@click.argument("nametag")
+@click.argument("rating")
+def rate(nametag, rating):
     pass
 
 
