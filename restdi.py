@@ -50,6 +50,9 @@ def all():
         print(f"{card.nametag} : {card.description} : {card.card.due.date()}")
 
 
+cli.add_command(all, name="la")
+
+
 # TODO: Get new files working
 @cli.command()
 def new():
@@ -75,7 +78,10 @@ def add(nametag, description):
         json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
 
-@cli.command()
+cli.add_command(add, name="a")
+
+
+@cli.command(name="rate")
 @click.argument("nametag")
 @click.argument("rating", type=int)
 def rate(nametag, rating):
@@ -92,6 +98,9 @@ def rate(nametag, rating):
 
     with open(CONFIG_FILE, "w") as f:
         json.dump({name: card.to_dict() for name, card in cards.items()}, f)
+
+
+cli.add_command(rate, name="r")
 
 
 @cli.command()
