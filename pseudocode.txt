@@ -1,0 +1,59 @@
+import click, os, tomlkit
+
+view function: 
+  check file
+  open file:
+  check date
+  
+  iterate through master dictionary:
+     print all items matching date, 
+     if there are none print "done for the day"
+  
+
+view all function:
+  check file
+  open file
+  check date
+  iterate through master dictionary:
+  print all items in master dictionary 
+
+
+new function: 
+  check file
+  present user with the option to reset their file or 
+  make a new one  
+  make new dictionary
+  make new file
+  write to disk 
+
+add function(nametag, description, optional: rating): 
+  user uses new name, description, and optional rating as argument
+  check file
+  load file
+  validate added name
+  validate optional rating
+  set mastery to initial value (based on rating if applicable)
+  generate valid date 
+  write file
+
+remove function(nametag): 
+  check file
+  load file
+  take nametag as argument
+  .pop() nametag
+  write file
+
+edit function(nametag):
+  check file
+  load file
+  check nametag in master dictionary
+  set new description
+  write file
+  
+
+save function(location):
+  check file
+  load file
+  verify location
+  save copy of file to location
+
