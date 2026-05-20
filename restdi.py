@@ -1,4 +1,5 @@
 # ruff: noqa: F401
+import restdi_card
 import os
 import click
 from datetime import datetime
