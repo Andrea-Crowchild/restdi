@@ -2,11 +2,17 @@
 import restdi_card
 import os
 import click
-from datetime import datetime
-from fsrs import Scheduler, Card, Rating, ReviewLog, State, review_log
+from datetime import date, timezone, timedelta, datetime
+from fsrs import Scheduler, Card, Rating, ReviewLog, State, review_log, scheduler
 import json
 
 CONFIG_FILE = os.path.expanduser("~/Code/python/restdi/restdi.json")
+RATING_MAP = {
+    1: Rating.Again,
+    2: Rating.Hard,
+    3: Rating.Good,
+    4: Rating.Easy,
+}
 
 
 # TODO: Create a secondary file and populate it with the logic that
@@ -18,7 +24,16 @@ CONFIG_FILE = os.path.expanduser("~/Code/python/restdi/restdi.json")
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
-    pass
+    if ctx.invoked_subcommand is None:
+        with open(CONFIG_FILE, "r") as f:
+            cards = {
+                name: restdi_card.RestdiCard.from_dict(data)
+                for name, data in json.load(f).items()
+            }
+        today = date.today()
+        for _name, card in cards.items():
+            if card.card.due.date() == today:
+                print(f"{card.nametag} : {card.description}")
 
 
 # TODO: Write a command to view all items in the list
@@ -38,8 +53,8 @@ def all():
 # TODO: Get new files working
 @cli.command()
 def new():
-    cards = {"test_one": restdi_card.RestdiCard("test_one", "description one of many")}
-    # cards = {}
+    # cards = {"test_one": restdi_card.RestdiCard("test_one", "description one of many")}
+    cards = {}
     with open(CONFIG_FILE, "w") as f:
         json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
@@ -54,6 +69,7 @@ def add(nametag, description):
             for name, data in json.load(f).items()
         }
     cards[nametag] = restdi_card.RestdiCard(nametag, description)
+    # cards[nametag].card.due = datetime.now(timezone.utc) + timedelta(days=1)
 
     with open(CONFIG_FILE, "w") as f:
         json.dump({name: card.to_dict() for name, card in cards.items()}, f)
@@ -61,9 +77,21 @@ def add(nametag, description):
 
 @cli.command()
 @click.argument("nametag")
-@click.argument("rating")
+@click.argument("rating", type=int)
 def rate(nametag, rating):
-    pass
+    with open(CONFIG_FILE, "r") as f:
+        cards = {
+            name: restdi_card.RestdiCard.from_dict(data)
+            for name, data in json.load(f).items()
+        }
+    scheduler = Scheduler()
+    cards[nametag].card, review_log = scheduler.review_card(
+        cards[nametag].card, RATING_MAP[rating]
+    )
+    print(f"Card rated {review_log.rating} on {review_log.review_datetime.date()}")
+
+    with open(CONFIG_FILE, "w") as f:
+        json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
 
 @cli.command()
