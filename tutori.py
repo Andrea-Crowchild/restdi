@@ -26,7 +26,7 @@ def cli(ctx):
             }
         today = date.today()
         width = max(len(name) for name in cards) + 2
-        for _name, card in cards.items():
+        for card in cards.keys():
             if card.card.due.date() == today:
                 print(f"{card.nametag.ljust(width)}", ":", f"{card.description}")
 
@@ -41,8 +41,8 @@ def all():
             name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
         }
     name_width = max(len(name) for name in cards) + 2
-    date_width = max(len(str(card.card.due.date())) for name, card in cards.items())
-    for name, card in cards.items():
+    date_width = max(len(str(card.card.due.date())) for card in cards.keys())
+    for card in cards.keys():
         print(
             f"{card.nametag.ljust(name_width)}",
             ":",
