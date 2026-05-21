@@ -35,7 +35,7 @@ def cli(ctx):
 
     today = date.today()
     width = max(len(name) for name in cards) + 2
-    for card in cards.keys():
+    for card in cards.values():
         if card.card.due.date() == today:
             print(f"{card.nametag.ljust(width)}", ":", f"{card.description}")
 
@@ -60,8 +60,8 @@ def all():
         return
 
     name_width = max(len(name) for name in cards) + 2
-    date_width = max(len(str(card.card.due.date())) for card in cards.keys())
-    for card in cards.keys():
+    date_width = max(len(str(card.card.due.date())) for card in cards.values())
+    for card in cards.values():
         print(
             f"{card.nametag.ljust(name_width)}",
             ":",
@@ -85,6 +85,7 @@ def new():
             cards = {}
             with open(CONFIG_FILE, "w") as f:
                 json.dump({name: card.to_dict() for name, card in cards.items()}, f)
+                return
         else:
             return
 
@@ -164,6 +165,7 @@ def edit(nametag, description):
 @cli.command()
 @click.argument("nametag")
 def remove(nametag):
+    # TODO: Add error handling
     with open(CONFIG_FILE, "r") as f:
         cards = {
             name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
