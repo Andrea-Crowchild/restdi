@@ -1,9 +1,8 @@
-# ruff: noqa: F401
 from tutoricard import TutoriCard
 import os
 import click
 from datetime import date, timezone, timedelta, datetime
-from fsrs import Scheduler, Card, Rating, ReviewLog, State, review_log, scheduler
+from fsrs import Scheduler, Card, Rating, ReviewLog, State
 import json
 
 CONFIG_FILE = os.path.expanduser("~/.config/tutori/tutori.json")
@@ -15,35 +14,32 @@ RATING_MAP = {
 }
 
 
-# TODO: Create a secondary file and populate it with the logic that
-# TODO: manages dates.
-# TODO: Design main function to take an optional nametag and a rating to
-# TODO: rate items and remove them from the list.
-
-
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
+    # TODO: Add help strings
+    # TODO: Add error catching
     if ctx.invoked_subcommand is None:
         with open(CONFIG_FILE, "r") as f:
             cards = {
                 name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
             }
         today = date.today()
+        # TODO: add the padding to the output display
         for _name, card in cards.items():
             if card.card.due.date() == today:
                 print(f"{card.nametag} : {card.description}")
 
 
-# TODO: Write a command to view all items in the list
-# TODO: regardless of date
 @cli.command()
 def all():
+    # TODO: Add help strings
+    # TODO: Add error catching
     with open(CONFIG_FILE, "r") as f:
         cards = {
             name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
         }
-
+    # TODO: Finish the output formatting
     for name, card in cards.items():
         print(f"{card.nametag} : {card.description} : {card.card.due.date()}")
 
@@ -51,10 +47,12 @@ def all():
 cli.add_command(all, name="la")
 
 
-# TODO: Get new files working
 @cli.command()
 def new():
-    # cards = {"test_one": restdi_card.RestdiCard("test_one", "description one of many")}
+    # TODO: Add help strings
+    # TODO: add logic to check if user wants to delete their file
+    config_dir = os.path.expanduser("~/.config/tutori/")
+    os.makedirs(config_dir, exist_ok=True)
     cards = {}
     with open(CONFIG_FILE, "w") as f:
         json.dump({name: card.to_dict() for name, card in cards.items()}, f)
@@ -64,6 +62,8 @@ def new():
 @click.argument("nametag")
 @click.argument("description")
 def add(nametag, description):
+    # TODO: Add help text
+    # TODO: Add error catching
     with open(CONFIG_FILE, "r") as f:
         cards = {
             name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
@@ -75,13 +75,12 @@ def add(nametag, description):
         json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
 
-cli.add_command(add, name="a")
-
-
 @cli.command(name="rate")
 @click.argument("nametag")
 @click.argument("rating", type=int)
 def rate(nametag, rating):
+    # TODO: Add help text
+    # TODO: Add error catching
     with open(CONFIG_FILE, "r") as f:
         cards = {
             name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
@@ -120,6 +119,7 @@ def remove(nametag):
         json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
 
+# TODO: Decide whether or not we will want this feature
 # TODO: Write a function that automatically purges the list of max mastery items.
 @cli.command()
 def clean():
