@@ -16,6 +16,7 @@ RATING_MAP = {
 }
 
 
+# TODO: Move file loading commands into function
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
@@ -37,6 +38,8 @@ def cli(ctx):
         print("Unable to read file")
         return
 
+    if len(cards) == 0:
+        return
     today = date.today()
     width = max(len(name) for name in cards) + 2
     for card in cards.values():
@@ -146,6 +149,7 @@ def rate(nametag, rating):
         print("Unable to read file")
         return
 
+    # TODO: Will raise KeyError, handle if nametag doesn't exist.
     scheduler = Scheduler()
     cards[nametag].card, review_log = scheduler.review_card(
         cards[nametag].card, RATING_MAP[rating]
@@ -159,6 +163,7 @@ def rate(nametag, rating):
 cli.add_command(rate, name="r")
 
 
+# TODO: This is still a stub
 @cli.command()
 @click.argument("nametag")
 @click.argument("description")
@@ -185,6 +190,7 @@ def remove(nametag):
         print("Unable to read file")
         return
 
+    # TODO: Will raise KeyError, handle if nametag doesn't exist.
     cards.pop(nametag)
 
     with open(CONFIG_FILE, "w") as f:
