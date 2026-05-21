@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from tutoricard import TutoriCard
 import os
 import click
@@ -18,6 +20,8 @@ RATING_MAP = {
 @click.pass_context
 def cli(ctx):
     # TODO: Add help strings
+    if ctx.invoked_subcommand is not None:
+        return
     try:
         with open(CONFIG_FILE, "r") as f:
             cards = {
