@@ -166,10 +166,20 @@ def edit(nametag, description):
 @click.argument("nametag")
 def remove(nametag):
     # TODO: Add error handling
-    with open(CONFIG_FILE, "r") as f:
-        cards = {
-            name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-        }
+    try:
+        with open(CONFIG_FILE, "r") as f:
+            cards = {
+                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
+            }
+    except FileNotFoundError:
+        print("File not found, use command 'new' to generate your file")
+        return
+    except PermissionError:
+        print("Permission error, unable to read file")
+        return
+    except json.JSONDecodeError:
+        print("Unable to read file")
+        return
 
     cards.pop(nametag)
 
