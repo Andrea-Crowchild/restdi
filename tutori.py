@@ -18,28 +18,47 @@ RATING_MAP = {
 @click.pass_context
 def cli(ctx):
     # TODO: Add help strings
-    # TODO: Add error catching
-    if ctx.invoked_subcommand is None:
+    try:
         with open(CONFIG_FILE, "r") as f:
             cards = {
                 name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
             }
-        today = date.today()
-        width = max(len(name) for name in cards) + 2
-        for card in cards.keys():
-            if card.card.due.date() == today:
-                print(f"{card.nametag.ljust(width)}", ":", f"{card.description}")
+    except FileNotFoundError:
+        print("File not found, use command 'new' to generate your file")
+        return
+    except PermissionError:
+        print("Permission error, unable to read file")
+        return
+    except json.JSONDecodeError:
+        print("Unable to read file")
+        return
+
+    today = date.today()
+    width = max(len(name) for name in cards) + 2
+    for card in cards.keys():
+        if card.card.due.date() == today:
+            print(f"{card.nametag.ljust(width)}", ":", f"{card.description}")
 
 
 @cli.command()
 def all():
     """View all items stored by Tutori"""
     # TODO: Improve docstrings
-    # TODO: Add error catching
-    with open(CONFIG_FILE, "r") as f:
-        cards = {
-            name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-        }
+    try:
+        with open(CONFIG_FILE, "r") as f:
+            cards = {
+                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
+            }
+    except FileNotFoundError:
+        print("File not found, use command 'new' to generate your file")
+        return
+    except PermissionError:
+        print("Permission error, unable to read file")
+        return
+    except json.JSONDecodeError:
+        print("Unable to read file")
+        return
+
     name_width = max(len(name) for name in cards) + 2
     date_width = max(len(str(card.card.due.date())) for card in cards.keys())
     for card in cards.keys():
@@ -63,6 +82,7 @@ def new():
         print("Y/N to continue")
         choice = input()
         if choice == "Y" or choice == "y":
+            cards = {}
             with open(CONFIG_FILE, "w") as f:
                 json.dump({name: card.to_dict() for name, card in cards.items()}, f)
         else:
@@ -80,11 +100,20 @@ def new():
 @click.argument("description")
 def add(nametag, description):
     # TODO: Add help text
-    # TODO: Add error catching
-    with open(CONFIG_FILE, "r") as f:
-        cards = {
-            name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-        }
+    try:
+        with open(CONFIG_FILE, "r") as f:
+            cards = {
+                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
+            }
+    except FileNotFoundError:
+        print("File not found, use command 'new' to generate your file")
+        return
+    except PermissionError:
+        print("Permission error, unable to read file")
+        return
+    except json.JSONDecodeError:
+        print("Unable to read file")
+        return
     cards[nametag] = TutoriCard(nametag, description)
     # cards[nametag].card.due = datetime.now(timezone.utc) + timedelta(days=1)
 
@@ -97,11 +126,21 @@ def add(nametag, description):
 @click.argument("rating", type=int)
 def rate(nametag, rating):
     # TODO: Add help text
-    # TODO: Add error catching
-    with open(CONFIG_FILE, "r") as f:
-        cards = {
-            name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-        }
+    try:
+        with open(CONFIG_FILE, "r") as f:
+            cards = {
+                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
+            }
+    except FileNotFoundError:
+        print("File not found, use command 'new' to generate your file")
+        return
+    except PermissionError:
+        print("Permission error, unable to read file")
+        return
+    except json.JSONDecodeError:
+        print("Unable to read file")
+        return
+
     scheduler = Scheduler()
     cards[nametag].card, review_log = scheduler.review_card(
         cards[nametag].card, RATING_MAP[rating]
