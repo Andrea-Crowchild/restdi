@@ -1,12 +1,12 @@
 # ruff: noqa: F401
-import restdi_card
+from tutoricard import TutoriCard
 import os
 import click
 from datetime import date, timezone, timedelta, datetime
 from fsrs import Scheduler, Card, Rating, ReviewLog, State, review_log, scheduler
 import json
 
-CONFIG_FILE = os.path.expanduser("~/Code/python/restdi/restdi.json")
+CONFIG_FILE = os.path.expanduser("~/.config/tutori/tutori.json")
 RATING_MAP = {
     1: Rating.Again,
     2: Rating.Hard,
@@ -27,8 +27,7 @@ def cli(ctx):
     if ctx.invoked_subcommand is None:
         with open(CONFIG_FILE, "r") as f:
             cards = {
-                name: restdi_card.RestdiCard.from_dict(data)
-                for name, data in json.load(f).items()
+                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
             }
         today = date.today()
         for _name, card in cards.items():
@@ -42,8 +41,7 @@ def cli(ctx):
 def all():
     with open(CONFIG_FILE, "r") as f:
         cards = {
-            name: restdi_card.RestdiCard.from_dict(data)
-            for name, data in json.load(f).items()
+            name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
         }
 
     for name, card in cards.items():
@@ -68,10 +66,9 @@ def new():
 def add(nametag, description):
     with open(CONFIG_FILE, "r") as f:
         cards = {
-            name: restdi_card.RestdiCard.from_dict(data)
-            for name, data in json.load(f).items()
+            name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
         }
-    cards[nametag] = restdi_card.RestdiCard(nametag, description)
+    cards[nametag] = TutoriCard(nametag, description)
     # cards[nametag].card.due = datetime.now(timezone.utc) + timedelta(days=1)
 
     with open(CONFIG_FILE, "w") as f:
@@ -87,8 +84,7 @@ cli.add_command(add, name="a")
 def rate(nametag, rating):
     with open(CONFIG_FILE, "r") as f:
         cards = {
-            name: restdi_card.RestdiCard.from_dict(data)
-            for name, data in json.load(f).items()
+            name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
         }
     scheduler = Scheduler()
     cards[nametag].card, review_log = scheduler.review_card(
@@ -115,8 +111,7 @@ def edit(nametag, description):
 def remove(nametag):
     with open(CONFIG_FILE, "r") as f:
         cards = {
-            name: restdi_card.RestdiCard.from_dict(data)
-            for name, data in json.load(f).items()
+            name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
         }
 
     cards.pop(nametag)

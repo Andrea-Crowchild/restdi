@@ -1,7 +1,7 @@
 from fsrs import Card
 
 
-class RestdiCard:
+class TutoriCard:
     def __init__(self, nametag, description):
         self.nametag = nametag
         self.description = description
