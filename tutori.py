@@ -58,7 +58,16 @@ cli.add_command(all, name="la")
 @cli.command()
 def new():
     # TODO: Add help strings
-    # TODO: add logic to check if user wants to delete their file
+    if os.path.exists(CONFIG_FILE):
+        print("Are you sure you want to delete your file and start over?")
+        print("Y/N to continue")
+        choice = input()
+        if choice == "Y" or choice == "y":
+            with open(CONFIG_FILE, "w") as f:
+                json.dump({name: card.to_dict() for name, card in cards.items()}, f)
+        else:
+            return
+
     config_dir = os.path.expanduser("~/.config/tutori/")
     os.makedirs(config_dir, exist_ok=True)
     cards = {}
