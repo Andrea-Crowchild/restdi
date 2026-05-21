@@ -25,23 +25,31 @@ def cli(ctx):
                 name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
             }
         today = date.today()
-        # TODO: add the padding to the output display
+        width = max(len(name) for name in cards) + 2
         for _name, card in cards.items():
             if card.card.due.date() == today:
-                print(f"{card.nametag} : {card.description}")
+                print(f"{card.nametag.ljust(width)}", ":", f"{card.description}")
 
 
 @cli.command()
 def all():
-    # TODO: Add help strings
+    """View all items stored by Tutori"""
+    # TODO: Improve docstrings
     # TODO: Add error catching
     with open(CONFIG_FILE, "r") as f:
         cards = {
             name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
         }
-    # TODO: Finish the output formatting
+    name_width = max(len(name) for name in cards) + 2
+    date_width = max(len(str(card.card.due.date())) for name, card in cards.items())
     for name, card in cards.items():
-        print(f"{card.nametag} : {card.description} : {card.card.due.date()}")
+        print(
+            f"{card.nametag.ljust(name_width)}",
+            ":",
+            f"{str(card.card.due.date()).ljust(date_width)}",
+            ":",
+            f"{card.description}",
+        )
 
 
 cli.add_command(all, name="la")
