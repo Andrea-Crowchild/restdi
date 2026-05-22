@@ -16,18 +16,13 @@ RATING_MAP = {
 }
 
 
-# TODO: Move file loading commands into function
-@click.group(invoke_without_command=True)
-@click.pass_context
-def cli(ctx):
-    # TODO: Add help strings
-    if ctx.invoked_subcommand is not None:
-        return
+def load_data():
     try:
         with open(CONFIG_FILE, "r") as f:
             cards = {
                 name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
             }
+            return cards
     except FileNotFoundError:
         print("File not found, use command 'new' to generate your file")
         return
@@ -38,8 +33,27 @@ def cli(ctx):
         print("Unable to read file")
         return
 
+
+# TODO: Build functionality to store review logs
+# TODO: Investigate building compatibility with the FSRS optimizer
+
+
+# TODO: Move file loading commands into function
+@click.group(invoke_without_command=True)
+@click.pass_context
+def cli(ctx):
+    """View due items"""
+    # TODO: Improve docstrings
+    if ctx.invoked_subcommand is not None:
+        return
+
+    cards = load_data()
+    if cards is None:
+        return
+
     if len(cards) == 0:
         return
+
     today = date.today()
     width = max(len(name) for name in cards) + 2
     for card in cards.values():
@@ -51,19 +65,8 @@ def cli(ctx):
 def all():
     """View all items stored by Tutori"""
     # TODO: Improve docstrings
-    try:
-        with open(CONFIG_FILE, "r") as f:
-            cards = {
-                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-            }
-    except FileNotFoundError:
-        print("File not found, use command 'new' to generate your file")
-        return
-    except PermissionError:
-        print("Permission error, unable to read file")
-        return
-    except json.JSONDecodeError:
-        print("Unable to read file")
+    cards = load_data()
+    if cards is None:
         return
 
     name_width = max(len(name) for name in cards) + 2
@@ -79,6 +82,14 @@ def all():
 
 
 cli.add_command(all, name="la")
+
+
+# TODO: Alternative name "soon"
+# TODO: Write upcoming function
+@cli.command()
+@click.argument("days", default=7, required=False)
+def upcoming(days):
+    pass
 
 
 @cli.command()
@@ -108,20 +119,10 @@ def new():
 @click.argument("description")
 def add(nametag, description):
     # TODO: Add help text
-    try:
-        with open(CONFIG_FILE, "r") as f:
-            cards = {
-                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-            }
-    except FileNotFoundError:
-        print("File not found, use command 'new' to generate your file")
+    cards = load_data()
+    if cards is None:
         return
-    except PermissionError:
-        print("Permission error, unable to read file")
-        return
-    except json.JSONDecodeError:
-        print("Unable to read file")
-        return
+
     cards[nametag] = TutoriCard(nametag, description)
     # cards[nametag].card.due = datetime.now(timezone.utc) + timedelta(days=1)
 
@@ -134,19 +135,8 @@ def add(nametag, description):
 @click.argument("rating", type=int)
 def rate(nametag, rating):
     # TODO: Add help text
-    try:
-        with open(CONFIG_FILE, "r") as f:
-            cards = {
-                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-            }
-    except FileNotFoundError:
-        print("File not found, use command 'new' to generate your file")
-        return
-    except PermissionError:
-        print("Permission error, unable to read file")
-        return
-    except json.JSONDecodeError:
-        print("Unable to read file")
+    cards = load_data()
+    if cards is None:
         return
 
     # TODO: Will raise KeyError, handle if nametag doesn't exist.
@@ -165,29 +155,18 @@ cli.add_command(rate, name="r")
 
 # TODO: This is still a stub
 @cli.command()
-@click.argument("nametag")
-@click.argument("description")
-def edit(nametag, description):
+@click.argument("old_name")
+@click.argument("new_name")
+@click.argument("description", required=False)
+def edit(old_name, new_name, description):
     pass
 
 
 @cli.command()
 @click.argument("nametag")
 def remove(nametag):
-    # TODO: Add error handling
-    try:
-        with open(CONFIG_FILE, "r") as f:
-            cards = {
-                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-            }
-    except FileNotFoundError:
-        print("File not found, use command 'new' to generate your file")
-        return
-    except PermissionError:
-        print("Permission error, unable to read file")
-        return
-    except json.JSONDecodeError:
-        print("Unable to read file")
+    cards = load_data()
+    if cards is None:
         return
 
     # TODO: Will raise KeyError, handle if nametag doesn't exist.
