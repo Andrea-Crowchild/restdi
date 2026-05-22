@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from tutoricard import TutoriCard
+from tutoricard import TutoriCard, load_data
 import os
 import click
 from datetime import date, timezone, timedelta, datetime
@@ -16,29 +16,10 @@ RATING_MAP = {
 }
 
 
-def load_data():
-    try:
-        with open(CONFIG_FILE, "r") as f:
-            cards = {
-                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-            }
-            return cards
-    except FileNotFoundError:
-        print("File not found, use command 'new' to generate your file")
-        return
-    except PermissionError:
-        print("Permission error, unable to read file")
-        return
-    except json.JSONDecodeError:
-        print("Unable to read file")
-        return
-
-
 # TODO: Build functionality to store review logs
 # TODO: Investigate building compatibility with the FSRS optimizer
 
 
-# TODO: Move file loading commands into function
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
