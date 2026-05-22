@@ -1,4 +1,4 @@
-from fsrs import Card
+from fsrs import Card, Scheduler
 import json
 import os
 
@@ -33,16 +33,28 @@ CONFIG_FILE = os.path.expanduser("~/.config/tutori/tutori.json")
 def load_data():
     try:
         with open(CONFIG_FILE, "r") as f:
-            cards = {
-                name: TutoriCard.from_dict(data) for name, data in json.load(f).items()
-            }
-            return cards
+            data = json.load(f)
+        cards = {
+            name: TutoriCard.from_dict(elements)
+            for name, elements in data["cards"].items()
+        }
+        scheduler = Scheduler.from_json(json.dumps(data["scheduler"]))
+        return cards, scheduler
     except FileNotFoundError:
         print("File not found, use command 'new' to generate your file")
-        return
+        return None, None
     except PermissionError:
         print("Permission error, unable to read file")
-        return
+        return None, None
     except json.JSONDecodeError:
         print("Unable to read file")
-        return
+        return None, None
+
+
+def save_data(cards, scheduler):
+    data = {
+        "cards": {name: card.to_dict() for name, card in cards.items()},
+        "scheduler": scheduler.to_dict(),
+    }
+    with open(CONFIG_FILE, "w") as f:
+        json.dump(data, f)

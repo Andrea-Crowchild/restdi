@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from tutoricard import TutoriCard, load_data
+from tutoricard import TutoriCard, load_data, save_data
 import os
 import click
 from datetime import date, timezone, timedelta, datetime
@@ -28,9 +28,9 @@ def cli(ctx):
     if ctx.invoked_subcommand is not None:
         return
 
-    cards = load_data()
+    cards, scheduler = load_data()
 
-    if not cards:
+    if cards is None:
         return
 
     today = date.today()
@@ -44,7 +44,7 @@ def cli(ctx):
 def all():
     """View all items stored by Tutori"""
     # TODO: Improve docstrings
-    cards = load_data()
+    cards, scheduler = load_data()
     if cards is None:
         return
 
@@ -81,17 +81,18 @@ def new():
         choice = input()
         if choice == "Y" or choice == "y":
             cards = {}
-            with open(CONFIG_FILE, "w") as f:
-                json.dump({name: card.to_dict() for name, card in cards.items()}, f)
-                return
+            scheduler = Scheduler()
+            save_data(cards, scheduler)
+            return
         else:
             return
 
     config_dir = os.path.expanduser("~/.config/tutori/")
     os.makedirs(config_dir, exist_ok=True)
+
     cards = {}
-    with open(CONFIG_FILE, "w") as f:
-        json.dump({name: card.to_dict() for name, card in cards.items()}, f)
+    scheduler = Scheduler()
+    save_data(cards, scheduler)
 
 
 @cli.command()
@@ -100,15 +101,14 @@ def new():
 def add(nametag, description):
     """Add an entry to Tutori"""
     # TODO: Add help text
-    cards = load_data()
+    cards, scheduler = load_data()
     if cards is None:
         return
 
     cards[nametag] = TutoriCard(nametag, description)
     # cards[nametag].card.due = datetime.now(timezone.utc) + timedelta(days=1)
 
-    with open(CONFIG_FILE, "w") as f:
-        json.dump({name: card.to_dict() for name, card in cards.items()}, f)
+    save_data(cards, scheduler)
 
 
 @cli.command(name="rate")
@@ -117,22 +117,24 @@ def add(nametag, description):
 def rate(nametag, rating):
     """Rate an entry on a scale of 1 to 4"""
     # TODO: Improve docstrings
-    cards = load_data()
+    cards, scheduler = load_data()
     if cards is None:
         return
+    if scheduler is None:
+        return
+    if nametag not in cards:
+        return
 
-    # TODO: Will raise KeyError, handle if nametag doesn't exist.
-    scheduler = Scheduler()
     cards[nametag].card, review_log = scheduler.review_card(
         cards[nametag].card, RATING_MAP[rating]
     )
+
     due_date = cards[nametag].card.due.date()
     cards[nametag].review_logs.append(json.loads(review_log.to_json()))
     # TODO: Print the next due date for each reviewed card
     print(f"Card rated {review_log.rating} on {review_log.review_datetime.date()}")
     print(f"Card next due on {due_date}")
-    with open(CONFIG_FILE, "w") as f:
-        json.dump({name: card.to_dict() for name, card in cards.items()}, f)
+    save_data(cards, scheduler)
 
 
 cli.add_command(rate, name="r")
@@ -152,15 +154,14 @@ def edit(old_name, new_name, description):
 def remove(nametag):
     """Remove an entry from Tutori"""
     # TODO: Improve docstrings
-    cards = load_data()
+    cards, scheduler = load_data()
     if cards is None:
         return
 
     # TODO: Will raise KeyError, handle if nametag doesn't exist.
     cards.pop(nametag)
 
-    with open(CONFIG_FILE, "w") as f:
-        json.dump({name: card.to_dict() for name, card in cards.items()}, f)
+    save_data(cards, scheduler)
 
 
 # TODO: Still a stub
