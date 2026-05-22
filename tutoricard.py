@@ -8,17 +8,20 @@ class TutoriCard:
         self.nametag = nametag
         self.description = description
         self.card = Card()
+        self.review_logs = []
 
     def to_dict(self):
         return {
             "nametag": self.nametag,
             "description": self.description,
             "card": self.card.to_dict(),
+            "review_logs": self.review_logs,
         }
 
     @classmethod
     def from_dict(cls, data):
         restdi_card = cls(data["nametag"], data["description"])
+        restdi_card.review_logs = data["review_logs"]
         restdi_card.card = Card.from_dict(data["card"])
         return restdi_card
 

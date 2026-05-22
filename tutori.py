@@ -29,10 +29,8 @@ def cli(ctx):
         return
 
     cards = load_data()
-    if cards is None:
-        return
 
-    if len(cards) == 0:
+    if not cards:
         return
 
     today = date.today()
@@ -75,7 +73,8 @@ def upcoming(days):
 
 @cli.command()
 def new():
-    # TODO: Add help strings
+    """Initialize or clear your save file"""
+    # TODO: Improve docstrings
     if os.path.exists(CONFIG_FILE):
         print("Are you sure you want to delete your file and start over?")
         print("Y/N to continue")
@@ -99,6 +98,7 @@ def new():
 @click.argument("nametag")
 @click.argument("description")
 def add(nametag, description):
+    """Add an entry to Tutori"""
     # TODO: Add help text
     cards = load_data()
     if cards is None:
@@ -115,7 +115,8 @@ def add(nametag, description):
 @click.argument("nametag")
 @click.argument("rating", type=int)
 def rate(nametag, rating):
-    # TODO: Add help text
+    """Rate an entry on a scale of 1 to 4"""
+    # TODO: Improve docstrings
     cards = load_data()
     if cards is None:
         return
@@ -146,6 +147,8 @@ def edit(old_name, new_name, description):
 @cli.command()
 @click.argument("nametag")
 def remove(nametag):
+    """Remove an entry from Tutori"""
+    # TODO: Improve docstrings
     cards = load_data()
     if cards is None:
         return
@@ -157,6 +160,7 @@ def remove(nametag):
         json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
 
+# TODO: Still a stub
 # TODO: Decide whether or not we will want this feature
 # TODO: Write a function that automatically purges the list of max mastery items.
 @cli.command()
@@ -164,6 +168,7 @@ def clean():
     pass
 
 
+# TODO: Still a stub
 # TODO: Write a function that saves the storage file to a specified location.
 @cli.command()
 @click.argument("location")
