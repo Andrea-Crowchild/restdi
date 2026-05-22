@@ -146,7 +146,20 @@ cli.add_command(rate, name="r")
 @click.argument("new_name")
 @click.argument("description", required=False)
 def edit(old_name, new_name, description):
-    pass
+    cards, scheduler = load_data()
+    if cards is None:
+        return
+    if old_name not in cards:
+        print("That's not an entry")
+        return
+
+    cards[new_name].nametag = new_name
+    cards[new_name] = cards[old_name]
+    cards.pop(old_name)
+    if description is not None:
+        cards[new_name].description = description
+
+    save_data(cards, scheduler)
 
 
 @cli.command()
