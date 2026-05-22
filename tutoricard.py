@@ -11,6 +11,7 @@ class TutoriCard:
         self.review_logs = []
 
     def to_dict(self):
+
         return {
             "nametag": self.nametag,
             "description": self.description,

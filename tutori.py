@@ -126,8 +126,11 @@ def rate(nametag, rating):
     cards[nametag].card, review_log = scheduler.review_card(
         cards[nametag].card, RATING_MAP[rating]
     )
+    due_date = cards[nametag].card.due.date()
+    cards[nametag].review_logs.append(json.loads(review_log.to_json()))
+    # TODO: Print the next due date for each reviewed card
     print(f"Card rated {review_log.rating} on {review_log.review_datetime.date()}")
-
+    print(f"Card next due on {due_date}")
     with open(CONFIG_FILE, "w") as f:
         json.dump({name: card.to_dict() for name, card in cards.items()}, f)
 
