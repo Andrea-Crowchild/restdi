@@ -58,3 +58,13 @@ def save_data(cards, scheduler):
     }
     with open(CONFIG_FILE, "w") as f:
         json.dump(data, f)
+
+
+def backup_data(cards, scheduler, location):
+    data = {
+        "cards": {name: card.to_dict() for name, card in cards.items()},
+        "scheduler": scheduler.to_dict(),
+    }
+    parsed_location = os.path.expanduser(location)
+    with open(parsed_location, "w") as f:
+        json.dump(data, f)
