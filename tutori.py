@@ -86,6 +86,9 @@ def upcoming(days_in):
             )
 
 
+cli.add_command(upcoming, name="u")
+
+
 @cli.command()
 def new():
     """Initialize or clear your save file"""
