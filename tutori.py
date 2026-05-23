@@ -15,9 +15,8 @@ RATING_MAP = {
     4: Rating.Easy,
 }
 
-
-# TODO: Build functionality to store review logs
-# TODO: Investigate building compatibility with the FSRS optimizer
+# TODO: Add shorthands to all applicable functions
+# TODO: Add optimizer
 
 
 @click.group(invoke_without_command=True)
@@ -62,8 +61,7 @@ def all():
 cli.add_command(all, name="la")
 
 
-# TODO: Alternative name "soon"
-# TODO: Write upcoming function
+# TODO: Add docstrings
 @cli.command()
 @click.argument("days_in", default=7, required=False)
 def upcoming(days_in):
@@ -152,7 +150,6 @@ def rate(nametag, rating):
 
     due_date = cards[nametag].card.due.date()
     cards[nametag].review_logs.append(json.loads(review_log.to_json()))
-    # TODO: Print the next due date for each reviewed card
     print(f"Card rated {review_log.rating} on {review_log.review_datetime.date()}")
     print(f"Card next due on {due_date}")
     save_data(cards, scheduler)
@@ -161,7 +158,6 @@ def rate(nametag, rating):
 cli.add_command(rate, name="r")
 
 
-# TODO: This is still a stub
 @cli.command()
 @click.argument("old_name")
 @click.argument("new_name")
@@ -200,13 +196,32 @@ def remove(nametag):
 
 
 # TODO: Still a stub
-# TODO: Decide whether or not we will want this feature
 # TODO: Purge items scheduled later than one year
 @cli.command()
 def clean():
-    pass
+    cards, scheduler = load_data()
+
+    if not cards:
+        return
+
+    print("Clean entries?")
+    print("Press Y/N to continue")
+    choice = input()
+    if choice != "Y" or choice != "y":
+        return
+
+    one_year_out = date.today() + timedelta(days=365)
+    entries_to_clean = []
+    for name, card in cards.items():
+        if card.card.due.date() > one_year_out:
+            entries_to_clean.append(name)
+    for name in entries_to_clean:
+        cards.pop(name)
+
+    save_data(cards, scheduler)
 
 
+# TODO: add docstrings
 @cli.command()
 @click.argument("location")
 def save(location):
