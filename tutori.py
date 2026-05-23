@@ -116,7 +116,7 @@ def new():
 @click.argument("description")
 def add(nametag, description):
     """Add an entry to Tutori"""
-    # TODO: Add help text
+    # TODO: Improve docstrings
     cards, scheduler = load_data()
     if cards is None:
         return
@@ -195,10 +195,10 @@ def remove(nametag):
     save_data(cards, scheduler)
 
 
-# TODO: Still a stub
-# TODO: Purge items scheduled later than one year
+# TODO: Improve docstrings
 @cli.command()
 def clean():
+    """Remove entries scheduled further out than one year"""
     cards, scheduler = load_data()
 
     if not cards:
@@ -228,6 +228,13 @@ def save(location):
     cards, scheduler = load_data()
 
     backup_data(cards, scheduler, location)
+
+
+# TODO: Flesh out function, lazy load optimizer
+# TODO: from fsrs import Optimizer
+@cli.command()
+def optimize():
+    pass
 
 
 if __name__ == "__main__":
