@@ -65,9 +65,25 @@ cli.add_command(all, name="la")
 # TODO: Alternative name "soon"
 # TODO: Write upcoming function
 @cli.command()
-@click.argument("days", default=7, required=False)
-def upcoming(days):
-    pass
+@click.argument("days_in", default=7, required=False)
+def upcoming(days_in):
+    cards, scheduler = load_data()
+
+    if not cards:
+        return
+    days_from_today = date.today() + timedelta(days=days_in)
+
+    name_width = max(len(name) for name in cards) + 2
+    date_width = max(len(str(card.card.due.date())) for card in cards.values())
+    for card in cards.values():
+        if card.card.due.date() <= days_from_today:
+            print(
+                f"{card.nametag.ljust(name_width)}",
+                ":",
+                f"{str(card.card.due.date()).ljust(date_width)}",
+                ":",
+                f"{card.description}",
+            )
 
 
 @cli.command()
@@ -185,8 +201,6 @@ def clean():
     pass
 
 
-# TODO: Still a stub
-# TODO: Write a function that saves the storage file to a specified location.
 @cli.command()
 @click.argument("location")
 def save(location):
