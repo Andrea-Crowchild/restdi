@@ -129,6 +129,9 @@ def add(nametag, description):
     save_data(cards, scheduler)
 
 
+cli.add_command(add, name="a")
+
+
 @cli.command(name="rate")
 @click.argument("nametag")
 @click.argument("rating", type=int)
