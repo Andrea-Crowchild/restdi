@@ -95,6 +95,9 @@ def show(nametag):
     cards, scheduler = load_data()
     if cards is None:
         return
+    if nametag not in cards:
+        print("That's not an entry")
+        return
 
     print(cards[nametag].answer)
 
