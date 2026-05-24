@@ -189,6 +189,9 @@ def rate(nametag, rating):
         return
     if nametag not in cards:
         return
+    if rating > 4 or rating < 1:
+        print("Rating must be an integer between 1 and 4")
+        return
 
     cards[nametag].card, review_log = scheduler.review_card(
         cards[nametag].card, RATING_MAP[rating]
