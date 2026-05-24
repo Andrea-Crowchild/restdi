@@ -97,6 +97,9 @@ def show(nametag):
     print(cards[nametag].answer)
 
 
+cli.add_command(show, name="s")
+
+
 @cli.command()
 def new():
     """Initialize or clear your save file"""
