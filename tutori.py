@@ -2,12 +2,11 @@
 # TODO: Add types to all command
 # TODO: Add more error checking
 
-from typing import Required
 from tutoricard import TutoriCard, load_data, save_data, backup_data
 import os
 import click
-from datetime import date, timedelta, timezone, datetime
-from fsrs import Scheduler, Card, Rating, ReviewLog
+from datetime import date, timedelta
+from fsrs import Scheduler, Rating, ReviewLog
 import json
 
 CONFIG_FILE = os.path.expanduser("~/.config/tutori/tutori.json")
@@ -49,7 +48,7 @@ def all():
 
     name_width = max(len(name) for name in cards) + 2
     date_width = max(len(str(card.card.due.date())) for card in cards.values())
-    cards = dict(sorted(cards.items(), key=lambda x: x[1].card.due))
+    cards = dict(sorted(cards.items()))
     for card in cards.values():
         print(
             f"{card.nametag.ljust(name_width)}",
