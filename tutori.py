@@ -133,8 +133,8 @@ def reset():
 
 
 @cli.command()
-@click.argument("nametag")
-@click.argument("description")
+@click.argument("nametag", type=str)
+@click.argument("description", type=str)
 def add(nametag, description):
     """Add an entry to Tutori"""
     # TODO: Improve docstrings
@@ -214,6 +214,9 @@ def remove(nametag):
     cards.pop(nametag)
 
     save_data(cards, scheduler)
+
+
+cli.add_command(remove, name="rm")
 
 
 # TODO: Improve docstrings
