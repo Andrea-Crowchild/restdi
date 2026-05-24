@@ -133,7 +133,7 @@ def reset():
     # TODO: Improve docstrings
     if os.path.exists(CONFIG_FILE):
         cards, scheduler = load_data()
-        print("Reset scheduler optimization?")
+        print("Reset scheduler optimization and retention?")
         print("Y/N to continue")
         choice = input()
         if choice == "Y" or choice == "y":
