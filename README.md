@@ -2,15 +2,6 @@
 
 A minimal, privacy-focused spaced repetition CLI tool powered by the [FSRS](https://github.com/open-spaced-repetition/py-fsrs) algorithm.
 
-## Philosophy
-
-Tutori is built around a few core principles:
-
-- **No bloat** — does one thing and does it well
-- **Your data is yours** — everything lives in a local JSON file at `~/.config/tutori/tutori.json`
-- **No telemetry** — nothing is ever sent anywhere
-- **Optimizer support** — accumulates review history for optional FSRS parameter optimization
-
 ## Installation
 
 Requires Python 3.10+ and the following dependencies:
@@ -38,7 +29,7 @@ Displays all items due today or overdue, sorted by due date.
 | `tutori`                                         | —                 | View due and overdue items                        |
 | `tutori all`                                     | `tutori la`       | View all items with due dates                     |
 | `tutori upcoming [days]`                         | `tutori u [days]` | View items due within N days (default 7)          |
-| `tutori add <nametag> <description> [answer]`    | `tutori a`        | Add an entry                                      |
+| `tutori add <nametag> <description> [answer]`    | `tutori a`        | Add an entry, answer is optional                  |
 | `tutori rate <nametag> <1-4>`                    | `tutori r`        | Rate an entry                                     |
 | `tutori show <nametag>`                          | `tutori s`        | Display the answer for an entry                   |
 | `tutori edit <old> <new> [description] [answer]` | `tutori e`        | Edit an entry                                     |
