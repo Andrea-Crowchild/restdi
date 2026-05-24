@@ -137,14 +137,15 @@ def reset():
 @cli.command()
 @click.argument("nametag", type=str)
 @click.argument("description", type=str)
-def add(nametag, description):
+@click.argument("answer", required=False, type=str)
+def add(nametag, description, answer):
     """Add an entry to Tutori"""
     # TODO: Improve docstrings
     cards, scheduler = load_data()
     if cards is None:
         return
 
-    cards[nametag] = TutoriCard(nametag, description)
+    cards[nametag] = TutoriCard(nametag, description, answer or "")
     # cards[nametag].card.due = datetime.now(timezone.utc) + timedelta(days=1)
 
     save_data(cards, scheduler)
@@ -233,7 +234,7 @@ def clean():
     print("Clean entries?")
     print("Press Y/N to continue")
     choice = input()
-    if choice != "Y" or choice != "y":
+    if choice != "Y" and choice != "y":
         return
 
     one_year_out = date.today() + timedelta(days=365)
