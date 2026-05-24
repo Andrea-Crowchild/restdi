@@ -3,8 +3,8 @@
 from tutoricard import TutoriCard, load_data, save_data, backup_data
 import os
 import click
-from datetime import date, timezone, timedelta, datetime
-from fsrs import Scheduler, Card, Rating, ReviewLog, State
+from datetime import date, timedelta
+from fsrs import Scheduler, Card, Rating, ReviewLog, scheduler
 import json
 
 CONFIG_FILE = os.path.expanduser("~/.config/tutori/tutori.json")
@@ -234,7 +234,15 @@ def save(location):
 # TODO: from fsrs import Optimizer
 @cli.command()
 def optimize():
-    pass
+    from fsrs import Optimizer
+
+    cards, scheduler = load_data()
+    if cards is None:
+        return
+    all_logs = []
+    for card in cards.values():
+        for log in card.review_logs:
+            all_logs.append(ReviewLog.from_json(json.dumps(log)))
 
 
 if __name__ == "__main__":
