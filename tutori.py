@@ -244,6 +244,18 @@ def optimize():
         for log in card.review_logs:
             all_logs.append(ReviewLog.from_json(json.dumps(log)))
 
+    optimizer = Optimizer(all_logs)
+    optimal_parameters = optimizer.compute_optimal_parameters()
+    optimal_retention = optimizer.compute_optimal_retention(optimal_parameters)
+    # FIX: Get a data set working then figure out whether or
+    # not retention turns back a list)
+    optimal_scheduler = Scheduler(optimal_parameters, optimal_retention)
+
+    for card in cards.values():
+        card.card = optimal_scheduler.reschedule_card(card.card, card.review_logs)
+
+    save_data(cards, optimal_scheduler)
+
 
 if __name__ == "__main__":
     cli()
