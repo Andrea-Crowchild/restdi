@@ -247,9 +247,12 @@ def optimize():
     optimizer = Optimizer(all_logs)
     optimal_parameters = optimizer.compute_optimal_parameters()
     optimal_scheduler = Scheduler(optimal_parameters)
-
+    print(optimal_parameters)
     for card in cards.values():
-        card.card = optimal_scheduler.reschedule_card(card.card, card.review_logs)
+        card.card = optimal_scheduler.reschedule_card(
+            card.card,
+            [ReviewLog.from_json(json.dumps(log)) for log in card.review_logs],
+        )
 
     save_data(cards, optimal_scheduler)
 
