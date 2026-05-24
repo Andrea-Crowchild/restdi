@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# TODO: Add types to all command
+# TODO: Add more error checking
 
 from tutoricard import TutoriCard, load_data, save_data, backup_data
 import os
@@ -60,7 +62,7 @@ cli.add_command(all, name="la")
 
 # TODO: Add docstrings
 @cli.command()
-@click.argument("days_in", default=7, required=False)
+@click.argument("days_in", default=7, required=False, type=int)
 def upcoming(days_in):
     cards, scheduler = load_data()
 
@@ -152,7 +154,7 @@ cli.add_command(add, name="a")
 
 
 @cli.command(name="rate")
-@click.argument("nametag")
+@click.argument("nametag", type=str)
 @click.argument("rating", type=int)
 def rate(nametag, rating):
     """Rate an entry on a scale of 1 to 4"""
@@ -180,8 +182,8 @@ cli.add_command(rate, name="r")
 
 
 @cli.command()
-@click.argument("old_name")
-@click.argument("new_name")
+@click.argument("old_name", type=str)
+@click.argument("new_name", type=str)
 @click.argument("description", required=False)
 def edit(old_name, new_name, description):
     cards, scheduler = load_data()
@@ -201,7 +203,7 @@ def edit(old_name, new_name, description):
 
 
 @cli.command()
-@click.argument("nametag")
+@click.argument("nametag", type=str)
 def remove(nametag):
     """Remove an entry from Tutori"""
     # TODO: Improve docstrings
@@ -247,7 +249,7 @@ def clean():
 
 # TODO: add docstrings
 @cli.command()
-@click.argument("location")
+@click.argument("location", type=str)
 def save(location):
     cards, scheduler = load_data()
 

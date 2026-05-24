@@ -4,9 +4,10 @@ import os
 
 
 class TutoriCard:
-    def __init__(self, nametag, description):
+    def __init__(self, nametag, description, answer=""):
         self.nametag = nametag
         self.description = description
+        self.answer = answer
         self.card = Card()
         self.review_logs = []
 
@@ -15,13 +16,14 @@ class TutoriCard:
         return {
             "nametag": self.nametag,
             "description": self.description,
+            "answer": self.answer,
             "card": self.card.to_dict(),
             "review_logs": self.review_logs,
         }
 
     @classmethod
     def from_dict(cls, data):
-        restdi_card = cls(data["nametag"], data["description"])
+        restdi_card = cls(data["nametag"], data["description"], data["answer"])
         restdi_card.review_logs = data["review_logs"]
         restdi_card.card = Card.from_dict(data["card"])
         return restdi_card
