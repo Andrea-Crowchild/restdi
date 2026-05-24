@@ -160,6 +160,9 @@ def add(nametag, description, answer):
     cards, scheduler = load_data()
     if cards is None:
         return
+    if len(nametag) > 7:
+        print("Nametag is too long, use 7 characters are fewer")
+        return
 
     cards[nametag] = TutoriCard(nametag, description, answer or "")
     # cards[nametag].card.due = datetime.now(timezone.utc) + timedelta(days=1)
@@ -212,16 +215,25 @@ def edit(old_name, new_name, description, answer):
     if old_name not in cards:
         print("That's not an entry")
         return
+    if len(new_name) > 7:
+        print("Nametag is too long, use 7 characters or fewer")
+        return
 
-    temp = cards[old_name]
-    cards.pop(old_name)
-    cards[new_name] = temp
-    cards[new_name].nametag = new_name
+    if old_name == new_name:
+        if description is not None:
+            cards[new_name].description = description
+        if answer is not None:
+            cards[new_name].answer = answer
+    else:
+        temp = cards[old_name]
+        cards.pop(old_name)
+        cards[new_name] = temp
+        cards[new_name].nametag = new_name
 
-    if description is not None:
-        cards[new_name].description = description
-    if answer is not None:
-        cards[new_name].answer = answer
+        if description is not None:
+            cards[new_name].description = description
+        if answer is not None:
+            cards[new_name].answer = answer
 
     save_data(cards, scheduler)
 
