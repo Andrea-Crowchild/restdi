@@ -2,6 +2,7 @@
 # TODO: Add types to all command
 # TODO: Add more error checking
 
+from typing import Required
 from tutoricard import TutoriCard, load_data, save_data, backup_data
 import os
 import click
@@ -201,8 +202,9 @@ cli.add_command(rate, name="r")
 @cli.command()
 @click.argument("old_name", type=str)
 @click.argument("new_name", type=str)
-@click.argument("description", required=False)
-def edit(old_name, new_name, description):
+@click.argument("description", required=False, type=str)
+@click.argument("answer", required=False, type=str)
+def edit(old_name, new_name, description, answer):
     cards, scheduler = load_data()
     if cards is None:
         return
@@ -210,11 +212,15 @@ def edit(old_name, new_name, description):
         print("That's not an entry")
         return
 
-    cards[new_name] = cards[old_name]
+    temp = cards[old_name]
+    cards.pop(old_name)
+    cards[new_name] = temp
     cards[new_name].nametag = new_name
     cards.pop(old_name)
     if description is not None:
         cards[new_name].description = description
+    if answer is not None:
+        cards[new_name].answer = answer
 
     save_data(cards, scheduler)
 
