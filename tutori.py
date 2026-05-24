@@ -1,7 +1,3 @@
-# TODO: Make resetting scheduler parameters separate from resetting
-# entire file
-# TODO: Add shorthands to all applicable functions
-# TODO: Add optimizer
 #!/usr/bin/env python3
 
 from tutoricard import TutoriCard, load_data, save_data, backup_data
