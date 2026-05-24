@@ -87,6 +87,17 @@ cli.add_command(upcoming, name="u")
 
 
 @cli.command()
+@click.argument("nametag", type=str)
+def show(nametag):
+    """Displays the answer of an entry"""
+    cards, scheduler = load_data()
+    if cards is None:
+        return
+
+    print(cards[nametag].answer)
+
+
+@cli.command()
 def new():
     """Initialize or clear your save file"""
     # TODO: Improve docstrings
@@ -174,6 +185,8 @@ def rate(nametag, rating):
 
     due_date = cards[nametag].card.due.date()
     cards[nametag].review_logs.append(json.loads(review_log.to_json()))
+    if cards[nametag].answer != "":
+        print(cards[nametag].answer)
     print(f"Card rated {review_log.rating} on {review_log.review_datetime.date()}")
     print(f"Card next due on {due_date}")
     save_data(cards, scheduler)
