@@ -1,9 +1,13 @@
+# TODO: Make resetting scheduler parameters separate from resetting
+# entire file
+# TODO: Add shorthands to all applicable functions
+# TODO: Add optimizer
 #!/usr/bin/env python3
 
 from tutoricard import TutoriCard, load_data, save_data, backup_data
 import os
 import click
-from datetime import date, timedelta
+from datetime import date, timedelta, timezone, datetime
 from fsrs import Scheduler, Card, Rating, ReviewLog
 import json
 
@@ -14,9 +18,6 @@ RATING_MAP = {
     3: Rating.Good,
     4: Rating.Easy,
 }
-
-# TODO: Add shorthands to all applicable functions
-# TODO: Add optimizer
 
 
 @click.group(invoke_without_command=True)
@@ -255,6 +256,14 @@ def optimize():
         )
 
     save_data(cards, optimal_scheduler)
+
+
+@cli.command()
+def scheduler():
+    cards, scheduler = load_data()
+    if scheduler is None:
+        return
+    print(scheduler.parameters)
 
 
 if __name__ == "__main__":
