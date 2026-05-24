@@ -216,7 +216,7 @@ def edit(old_name, new_name, description, answer):
     cards.pop(old_name)
     cards[new_name] = temp
     cards[new_name].nametag = new_name
-    cards.pop(old_name)
+
     if description is not None:
         cards[new_name].description = description
     if answer is not None:
