@@ -131,11 +131,11 @@ def new():
 
 @cli.command()
 def reset():
-    """Initialize or clear your save file"""
+    """Reset scheduler optimization"""
     # TODO: Improve docstrings
     if os.path.exists(CONFIG_FILE):
         cards, scheduler = load_data()
-        print("Reset scheduler optimization and retention?")
+        print("Reset scheduler optimization?")
         print("Y/N to continue")
         choice = input()
         if choice == "Y" or choice == "y":
@@ -333,13 +333,15 @@ def scheduler():
     print(scheduler.parameters)
 
 
-# TODO: This is just a stub
 # TODO: add docstrings
+# TODO: Write a command that calculates card retreivability
 @cli.command()
-@click.argument("retention", type=float)
-def retention(retention):
+@click.argument("nametag", type=str)
+def retrieve(nametag):
     pass
 
+
+cli.add_command(retrieve, name="ret")
 
 if __name__ == "__main__":
     cli()
