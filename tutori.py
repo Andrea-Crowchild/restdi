@@ -93,11 +93,35 @@ def new():
     """Initialize or clear your save file"""
     # TODO: Improve docstrings
     if os.path.exists(CONFIG_FILE):
+        cards, scheduler = load_data()
         print("Are you sure you want to delete your file and start over?")
         print("Y/N to continue")
         choice = input()
         if choice == "Y" or choice == "y":
             cards = {}
+            save_data(cards, scheduler)
+            return
+        else:
+            return
+
+    config_dir = os.path.expanduser("~/.config/tutori/")
+    os.makedirs(config_dir, exist_ok=True)
+
+    cards = {}
+    scheduler = Scheduler()
+    save_data(cards, scheduler)
+
+
+@cli.command()
+def reset():
+    """Initialize or clear your save file"""
+    # TODO: Improve docstrings
+    if os.path.exists(CONFIG_FILE):
+        cards, scheduler = load_data()
+        print("Reset scheduler optimization?")
+        print("Y/N to continue")
+        choice = input()
+        if choice == "Y" or choice == "y":
             scheduler = Scheduler()
             save_data(cards, scheduler)
             return
