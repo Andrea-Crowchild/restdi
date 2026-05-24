@@ -33,7 +33,7 @@ def cli(ctx):
     today = date.today()
     width = max(len(name) for name in cards) + 2
     for card in cards.values():
-        if card.card.due.date() == today:
+        if card.card.due.date() <= today:
             print(f"{card.nametag.ljust(width)}", ":", f"{card.description}")
 
 
