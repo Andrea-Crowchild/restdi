@@ -1,6 +1,6 @@
 # Tutori
 
-A minimal, privacy-focused spaced repetition CLI tool powered by the [FSRS](https://github.com/open-spaced-repetition/py-fsrs) algorithm.
+A minimal, privacy-focused spaced repetition CLI tool powered by the [FSRS](https://github.com/open-spaced-repetition/py-fsrs) algorithm. Contains no telemetry, no data will ever be gathered by Tutori.
 
 ## Installation
 
