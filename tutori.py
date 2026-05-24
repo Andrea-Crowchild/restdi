@@ -219,6 +219,9 @@ def edit(old_name, new_name, description):
     save_data(cards, scheduler)
 
 
+cli.add_command(edit, name="e")
+
+
 @cli.command()
 @click.argument("nametag", type=str)
 def remove(nametag):
