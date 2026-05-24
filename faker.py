@@ -2,7 +2,6 @@ import random
 import sys
 from tutoricard import TutoriCard, load_data, save_data, backup_data
 import os
-import click
 from datetime import date, timedelta
 from fsrs import Scheduler, Card, Rating, ReviewLog
 import json
@@ -23,9 +22,9 @@ if scheduler is None:
 ratings = [1, 2, 3, 4]
 weights = [10, 20, 50, 20]
 
-_i = 0
 for i in range(1, 200):
     for card in cards.values():
+        print(i)
         result = random.choices(ratings, weights=weights, k=1)[0]
         card.card, review_log = scheduler.review_card(card.card, RATING_MAP[result])
         card.review_logs.append(json.loads(review_log.to_json()))
