@@ -33,7 +33,7 @@ def cli(ctx):
         return
     today = date.today()
     width = max(len(name) for name in cards) + 2
-    cards = dict(sorted(cards.items()))
+    cards = dict(sorted(cards.items(), key=lambda x: x[1].card.due))
     for card in cards.values():
         if card.card.due.date() <= today:
             print(f"{card.nametag.ljust(width)}", ":", f"{card.description}")
@@ -49,7 +49,7 @@ def all():
 
     name_width = max(len(name) for name in cards) + 2
     date_width = max(len(str(card.card.due.date())) for card in cards.values())
-    cards = dict(sorted(cards.items()))
+    cards = dict(sorted(cards.items(), key=lambda x: x[1].card.due))
     for card in cards.values():
         print(
             f"{card.nametag.ljust(name_width)}",
