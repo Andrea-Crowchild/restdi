@@ -319,5 +319,13 @@ def scheduler():
     print(scheduler.parameters)
 
 
+# TODO: This is just a stub
+# TODO: add docstrings
+@cli.command()
+@click.argument("retention", type=float)
+def retention(retention):
+    pass
+
+
 if __name__ == "__main__":
     cli()
