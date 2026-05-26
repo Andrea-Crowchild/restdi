@@ -10,12 +10,6 @@ from fsrs import Scheduler, Rating, ReviewLog
 import json
 
 CONFIG_FILE = os.path.expanduser("~/.config/tutori/tutori.json")
-RATING_MAP = {
-    1: Rating.Again,
-    2: Rating.Hard,
-    3: Rating.Good,
-    4: Rating.Easy,
-}
 
 
 @click.group(invoke_without_command=True)
@@ -194,9 +188,7 @@ def rate(nametag, rating):
         print("Rating must be an integer between 1 and 4")
         return
 
-    cards[nametag].card, review_log = scheduler.review_card(
-        cards[nametag].card, RATING_MAP[rating]
-    )
+    cards[nametag].card, review_log = scheduler.review_card(cards[nametag].card, rating)
 
     due_date = cards[nametag].card.due.date()
     cards[nametag].review_logs.append(json.loads(review_log.to_json()))
