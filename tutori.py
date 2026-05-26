@@ -221,9 +221,6 @@ def edit(old_name, new_name, description, answer):
     if old_name not in cards:
         print("That's not an entry")
         return
-    if new_name in cards:
-        print("That's already an entry")
-        return
     if len(new_name) > 7:
         print("Nametag is too long, use 7 characters or fewer")
         return
@@ -234,6 +231,9 @@ def edit(old_name, new_name, description, answer):
         if answer is not None:
             cards[new_name].answer = answer
     else:
+        if new_name in cards:
+            print("That's already an entry")
+            return
         temp = cards[old_name]
         cards.pop(old_name)
         cards[new_name] = temp
