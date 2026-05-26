@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # TODO: Add types to all command
 # TODO: Add more error checking
-
+# TODO: Change "entry" or "item" to "card"
 from tutoricard import TutoriCard, load_data, save_data, backup_data
 import os
 import click
