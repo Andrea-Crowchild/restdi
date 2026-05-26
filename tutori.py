@@ -189,6 +189,7 @@ def rate(nametag, rating):
     if scheduler is None:
         return
     if nametag not in cards:
+        print("That's not a card")
         return
     if rating > 4 or rating < 1:
         print("Rating must be an integer between 1 and 4")
