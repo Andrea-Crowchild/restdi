@@ -68,6 +68,7 @@ def upcoming(days_in):
     if not cards:
         return
     days_from_today = date.today() + timedelta(days=days_in)
+    cards = dict(sorted(cards.items(), key=lambda x: x[1].card.due))
 
     name_width = max(len(name) for name in cards) + 2
     date_width = max(len(str(card.card.due.date())) for card in cards.values())
