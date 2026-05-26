@@ -97,7 +97,7 @@ def show(nametag):
         print("That's not an entry")
         return
 
-    print(cards[nametag].answer)
+    print(f"Answer: {cards[nametag].answer}")
 
 
 cli.add_command(show, name="s")
@@ -197,7 +197,7 @@ def rate(nametag, rating):
     review_time = review_log.review_datetime.strftime("%Y-%m-%d %H:%M")
     cards[nametag].review_logs.append(json.loads(review_log.to_json()))
     if cards[nametag].answer != "":
-        print(cards[nametag].answer)
+        print(f"Answer: {cards[nametag].answer}")
     print(f"Card rated {review_log.rating} on {review_time}")
     print(f"Card next due on {due_date}")
     save_data(cards, scheduler)
