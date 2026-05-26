@@ -66,6 +66,7 @@ cli.add_command(all, name="la")
 @cli.command()
 @click.argument("days_in", default=7, required=False, type=int)
 def upcoming(days_in):
+    """Displays all cards due in N number of days"""
     cards, scheduler = load_data()
 
     if not cards:
@@ -245,6 +246,7 @@ def edit(old_name, new_name, description, answer):
 
 
 cli.add_command(edit, name="e")
+# tests and stuff
 
 
 @cli.command()
@@ -292,19 +294,21 @@ def clean():
     save_data(cards, scheduler)
 
 
-# TODO: add docstrings
 @cli.command()
 @click.argument("location", type=str)
 def save(location):
+    """Save a backup of your file, input path as string"""
+    # TODO: Improve docstrings
     cards, scheduler = load_data()
 
     backup_data(cards, scheduler, location)
 
 
-# TODO: Flesh out function, lazy load optimizer
-# TODO: from fsrs import Optimizer
 @cli.command()
 def optimize():
+    """Run the optimizer on your saved data to custom tune scheduler parameters
+    to you"""
+    # TODO: Improve docstrings
     from fsrs import Optimizer
 
     cards, scheduler = load_data()
@@ -330,18 +334,31 @@ def optimize():
 
 @cli.command()
 def scheduler():
+    """Print current scheduler parameters"""
+    # TODO: Improve docstrings
     cards, scheduler = load_data()
     if scheduler is None:
         return
     print(scheduler.parameters)
 
 
-# TODO: add docstrings
-# TODO: Write a command that calculates card retreivability
 @cli.command()
 @click.argument("nametag", type=str)
 def retrieve(nametag):
-    pass
+    """Get the retrievability stat of a card"""
+    # TODO: Improve docstrings
+    cards, scheduler = load_data()
+    if scheduler is None:
+        return
+    if cards is None:
+        return
+    if nametag not in cards:
+        print("That's not an entry")
+        return
+
+    card_retrievability = scheduler.get_card_retrievability(cards[nametag].card)
+
+    print(f"Card retrievability: {card_retrievability}")
 
 
 cli.add_command(retrieve, name="ret")

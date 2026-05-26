@@ -1,0 +1,27 @@
+
+    """View due items"""
+    """View all items stored by Tutori"""
+    """Displays all cards due in N number of days"""
+    """Displays the answer of an entry"""
+    """Initialize or clear your save file"""
+        print("Are you sure you want to delete your file and start over?")
+        print("Y/N to continue")
+    """Reset scheduler optimization"""
+    """Add an entry to Tutori"""
+        print("Nametag is too long, use 7 characters are fewer")
+    """Rate an entry on a scale of 1 to 4"""
+        print("Rating must be an integer between 1 and 4")
+    print(f"Card rated {review_log.rating} on {review_log.review_datetime.date()}")
+    print(f"Card next due on {due_date}")
+        print("That's not an entry")
+        print("Nametag is too long, use 7 characters or fewer")
+    """Remove an entry from Tutori"""
+    """Remove entries scheduled further out than one year"""
+    print("Clean entries?")
+    print("Press Y/N to continue")
+    """Save a backup of your file, input path as string"""
+    """Run the optimizer on your saved data to custom tune scheduler parameters
+    to you"""
+    """Print current scheduler parameters"""
+    """Get the retrievability stat of a card"""
+        print("That's not an entry")
