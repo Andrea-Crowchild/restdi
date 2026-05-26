@@ -5,7 +5,7 @@
 from tutoricard import TutoriCard, load_data, save_data, backup_data
 import os
 import click
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime, timezone
 from fsrs import Scheduler, ReviewLog
 import json
 
@@ -25,10 +25,11 @@ def cli(ctx):
     if not cards:
         return
     today = date.today()
+    now = datetime.now(timezone.utc)
     width = max(len(name) for name in cards) + 2
     cards = dict(sorted(cards.items(), key=lambda x: x[1].card.due))
     for card in cards.values():
-        if card.card.due.date() <= today:
+        if card.card.due <= now:
             print(f"{card.nametag.ljust(width)}", ":", f"{card.description}")
 
 
@@ -47,7 +48,7 @@ def all():
         print(
             f"{card.nametag.ljust(name_width)}",
             ":",
-            f"{str(card.card.due.date()).ljust(date_width)}",
+            f"{card.card.due.strftime('%Y-%m-%d %H:%M').ljust(date_width)}",
             ":",
             f"{card.description}",
         )
@@ -58,9 +59,10 @@ cli.add_command(all, name="la")
 
 # TODO: Add docstrings
 @cli.command()
-@click.argument("days_in", default=7, required=False, type=int)
+@click.argument("days_in", default=3, required=False, type=int)
 def upcoming(days_in):
-    """Displays all cards due in N number of days"""
+    """Displays all cards due in N number of days, if no argument is provided,
+    default is 3"""
     cards, scheduler = load_data()
 
     if not cards:
@@ -190,11 +192,12 @@ def rate(nametag, rating):
 
     cards[nametag].card, review_log = scheduler.review_card(cards[nametag].card, rating)
 
-    due_date = cards[nametag].card.due.date()
+    due_date = cards[nametag].card.due.strftime("%Y-%m-%d %H:%M")
+    review_time = review_log.review_datetime.strftime("%Y-%m-%d %H:%M")
     cards[nametag].review_logs.append(json.loads(review_log.to_json()))
     if cards[nametag].answer != "":
         print(cards[nametag].answer)
-    print(f"Card rated {review_log.rating} on {review_log.review_datetime.date()}")
+    print(f"Card rated {review_log.rating} on {review_time}")
     print(f"Card next due on {due_date}")
     save_data(cards, scheduler)
 
