@@ -76,7 +76,7 @@ def upcoming(days_in):
             print(
                 f"{card.nametag.ljust(name_width)}",
                 ":",
-                f"{str(card.card.due.date()).ljust(date_width)}",
+                f"{str(card.card.due.strftime('%Y-%m-%d %H:%M')).ljust(date_width)}",
                 ":",
                 f"{card.description}",
             )
