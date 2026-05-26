@@ -159,7 +159,7 @@ def add(nametag, description, answer):
     if cards is None:
         return
     if len(nametag) > 7:
-        print("Nametag is too long, use 7 characters are fewer")
+        print("Nametag is too long, use 7 characters or fewer")
         return
 
     cards[nametag] = TutoriCard(nametag, description, answer or "")
