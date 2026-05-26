@@ -6,7 +6,7 @@ from tutoricard import TutoriCard, load_data, save_data, backup_data
 import os
 import click
 from datetime import date, timedelta
-from fsrs import Scheduler, Rating, ReviewLog
+from fsrs import Scheduler, ReviewLog
 import json
 
 CONFIG_FILE = os.path.expanduser("~/.config/tutori/tutori.json")
