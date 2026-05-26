@@ -161,6 +161,9 @@ def add(nametag, description, answer):
     cards, scheduler = load_data()
     if cards is None:
         return
+    if nametag in cards:
+        print("That's already an entry")
+        return
     if len(nametag) > 7:
         print("Nametag is too long, use 7 characters or fewer")
         return
@@ -217,6 +220,9 @@ def edit(old_name, new_name, description, answer):
         return
     if old_name not in cards:
         print("That's not an entry")
+        return
+    if new_name in cards:
+        print("That's already an entry")
         return
     if len(new_name) > 7:
         print("Nametag is too long, use 7 characters or fewer")
