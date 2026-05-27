@@ -56,9 +56,6 @@ def all():
         )
 
 
-cli.add_command(all, name="la")
-
-
 # TODO: Add docstrings
 @cli.command()
 @click.argument("days_in", default=3, required=False, type=int)
@@ -86,9 +83,6 @@ def upcoming(days_in):
             )
 
 
-cli.add_command(upcoming, name="u")
-
-
 @cli.command()
 @click.argument("nametag", type=str)
 def show(nametag):
@@ -101,9 +95,6 @@ def show(nametag):
         return
 
     print(f"Answer: {cards[nametag].answer}")
-
-
-cli.add_command(show, name="s")
 
 
 @cli.command()
@@ -177,9 +168,6 @@ def add(nametag, description, answer):
     save_data(cards, scheduler)
 
 
-cli.add_command(add, name="a")
-
-
 @cli.command(name="rate")
 @click.argument("nametag", type=str)
 @click.argument("rating", type=int)
@@ -210,15 +198,14 @@ def rate(nametag, rating):
     save_data(cards, scheduler)
 
 
-cli.add_command(rate, name="r")
-
-
 @cli.command()
 @click.argument("old_name", type=str)
 @click.argument("new_name", type=str)
 @click.argument("description", required=False, type=str)
 @click.argument("answer", required=False, type=str)
 def edit(old_name, new_name, description, answer):
+    """Change a card's information"""
+    # TODO: Improve docstrings
     cards, scheduler = load_data()
     if cards is None:
         return
@@ -251,10 +238,6 @@ def edit(old_name, new_name, description, answer):
     save_data(cards, scheduler)
 
 
-cli.add_command(edit, name="e")
-# tests and stuff
-
-
 @cli.command()
 @click.argument("nametag", type=str)
 def remove(nametag):
@@ -269,9 +252,6 @@ def remove(nametag):
     cards.pop(nametag)
 
     save_data(cards, scheduler)
-
-
-cli.add_command(remove, name="rm")
 
 
 # TODO: Improve docstrings
@@ -370,7 +350,15 @@ def retrieve(nametag):
     print(f"Card retrievability: {card_retrievability}")
 
 
+cli.add_command(add, name="a")
+cli.add_command(all, name="la")
+cli.add_command(edit, name="e")
+cli.add_command(rate, name="r")
+cli.add_command(remove, name="rm")
 cli.add_command(retrieve, name="ret")
+cli.add_command(show, name="s")
+cli.add_command(upcoming, name="u")
+
 
 if __name__ == "__main__":
     cli()
