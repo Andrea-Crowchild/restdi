@@ -1,6 +1,7 @@
-from fsrs import Card, Scheduler
 import json
 import os
+
+from fsrs import Card, Scheduler
 
 
 class TutoriCard:
@@ -12,7 +13,6 @@ class TutoriCard:
         self.review_logs = []
 
     def to_dict(self):
-
         return {
             "nametag": self.nametag,
             "description": self.description,
@@ -23,10 +23,10 @@ class TutoriCard:
 
     @classmethod
     def from_dict(cls, data):
-        restdi_card = cls(data["nametag"], data["description"], data["answer"])
-        restdi_card.review_logs = data["review_logs"]
-        restdi_card.card = Card.from_dict(data["card"])
-        return restdi_card
+        tutori_card = cls(data["nametag"], data["description"], data["answer"])
+        tutori_card.review_logs = data["review_logs"]
+        tutori_card.card = Card.from_dict(data["card"])
+        return tutori_card
 
 
 CONFIG_FILE = os.path.expanduser("~/.config/tutori/tutori.json")
@@ -36,12 +36,16 @@ def load_data():
     try:
         with open(CONFIG_FILE, "r") as f:
             data = json.load(f)
+
         cards = {
             name: TutoriCard.from_dict(elements)
             for name, elements in data["cards"].items()
         }
+
         scheduler = Scheduler.from_json(json.dumps(data["scheduler"]))
+
         return cards, scheduler
+
     except FileNotFoundError:
         print("File not found, use command 'new' to generate your file")
         return None, None
@@ -58,6 +62,7 @@ def save_data(cards, scheduler):
         "cards": {name: card.to_dict() for name, card in cards.items()},
         "scheduler": scheduler.to_dict(),
     }
+
     with open(CONFIG_FILE, "w") as f:
         json.dump(data, f)
 
@@ -67,6 +72,8 @@ def backup_data(cards, scheduler, location):
         "cards": {name: card.to_dict() for name, card in cards.items()},
         "scheduler": scheduler.to_dict(),
     }
+
     parsed_location = os.path.expanduser(location)
+
     with open(parsed_location, "w") as f:
         json.dump(data, f)
