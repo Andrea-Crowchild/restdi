@@ -320,7 +320,8 @@ def optimize():
     from fsrs import Optimizer
 
     cards, scheduler = load_data()
-    if cards is None:
+    # checks to see if cards is empty or 0 prior ot running
+    if not cards:
         return
     all_logs = []
     for card in cards.values():
