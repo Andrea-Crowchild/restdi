@@ -17,6 +17,7 @@ CONFIG_FILE = os.path.expanduser("~/.config/tutori/tutori.json")
 def cli(ctx):
     """View due items"""
     # TODO: Improve docstrings
+
     if ctx.invoked_subcommand is not None:
         return
 
@@ -25,10 +26,11 @@ def cli(ctx):
     #  checks if cards is 0 or None
     if not cards:
         return
-    today = date.today()
+
     now = datetime.now(timezone.utc)
     width = max(len(name) for name in cards) + 2
     cards = dict(sorted(cards.items(), key=lambda x: x[1].card.due))
+
     for card in cards.values():
         if card.card.due <= now:
             print(f"{card.nametag.ljust(width)}", ":", f"{card.description}")
@@ -38,14 +40,17 @@ def cli(ctx):
 def all():
     """View all items stored by Tutori"""
     # TODO: Improve docstrings
+
     cards, scheduler = load_data()
     # checks if cards is 0 as well as None
+
     if not cards:
         return
 
     name_width = max(len(name) for name in cards) + 2
     date_width = max(len(str(card.card.due.date())) for card in cards.values())
     cards = dict(sorted(cards.items()))
+
     for card in cards.values():
         print(
             f"{card.nametag.ljust(name_width)}",
@@ -62,16 +67,18 @@ def all():
 def upcoming(days_in):
     """Displays all cards due in N number of days, if no argument is provided,
     default is 3"""
+
     cards, scheduler = load_data()
 
     # checks if cards is zero or None
     if not cards:
         return
+
     days_from_today = date.today() + timedelta(days=days_in)
     cards = dict(sorted(cards.items(), key=lambda x: x[1].card.due))
-
     name_width = max(len(name) for name in cards) + 2
     date_width = max(len(str(card.card.due.date())) for card in cards.values())
+
     for card in cards.values():
         if card.card.due.date() <= days_from_today:
             print(
@@ -87,7 +94,9 @@ def upcoming(days_in):
 @click.argument("nametag", type=str)
 def show(nametag):
     """Displays the answer of an entry"""
+
     cards, scheduler = load_data()
+
     if cards is None:
         return
     if nametag not in cards:
@@ -101,11 +110,14 @@ def show(nametag):
 def new():
     """Initialize or clear your save file"""
     # TODO: Improve docstrings
+
     if os.path.exists(CONFIG_FILE):
         cards, scheduler = load_data()
+
         print("Are you sure you want to delete your file and start over?")
         print("Y/N to continue")
         choice = input()
+
         if choice == "Y" or choice == "y":
             cards = {}
             save_data(cards, scheduler)
@@ -125,6 +137,7 @@ def new():
 def reset():
     """Reset scheduler optimization"""
     # TODO: Improve docstrings
+
     if os.path.exists(CONFIG_FILE):
         cards, scheduler = load_data()
         print("Reset scheduler optimization?")
@@ -152,12 +165,15 @@ def reset():
 def add(nametag, description, answer):
     """Add an entry to Tutori"""
     # TODO: Improve docstrings
+
     cards, scheduler = load_data()
     if cards is None:
         return
+
     if nametag in cards:
         print("That's already an entry")
         return
+
     if len(nametag) > 7:
         print("Nametag is too long, use 7 characters or fewer")
         return
@@ -191,10 +207,12 @@ def rate(nametag, rating):
     due_date = cards[nametag].card.due.strftime("%Y-%m-%d %H:%M")
     review_time = review_log.review_datetime.strftime("%Y-%m-%d %H:%M")
     cards[nametag].review_logs.append(json.loads(review_log.to_json()))
+
     if cards[nametag].answer != "":
         print(f"Answer: {cards[nametag].answer}")
     print(f"Card rated {review_log.rating} on {review_time}")
     print(f"Card next due on {due_date}")
+
     save_data(cards, scheduler)
 
 
@@ -206,7 +224,9 @@ def rate(nametag, rating):
 def edit(old_name, new_name, description, answer):
     """Change a card's information"""
     # TODO: Improve docstrings
+
     cards, scheduler = load_data()
+
     if cards is None:
         return
     if old_name not in cards:
@@ -225,6 +245,7 @@ def edit(old_name, new_name, description, answer):
         if new_name in cards:
             print("That's already an entry")
             return
+
         temp = cards[old_name]
         cards.pop(old_name)
         cards[new_name] = temp
@@ -243,12 +264,15 @@ def edit(old_name, new_name, description, answer):
 def remove(nametag):
     """Remove an entry from Tutori"""
     # TODO: Improve docstrings
+
     cards, scheduler = load_data()
+
     if cards is None:
         return
     if nametag not in cards:
         print("That's not an entry")
         return
+
     cards.pop(nametag)
 
     save_data(cards, scheduler)
@@ -258,6 +282,7 @@ def remove(nametag):
 @cli.command()
 def clean():
     """Remove entries scheduled further out than one year"""
+
     cards, scheduler = load_data()
 
     if cards is None:
@@ -266,6 +291,7 @@ def clean():
     print("Clean entries?")
     print("Press Y/N to continue")
     choice = input()
+
     if choice != "Y" and choice != "y":
         return
     if len(cards) == 0:
@@ -273,9 +299,11 @@ def clean():
 
     one_year_out = date.today() + timedelta(days=365)
     entries_to_clean = []
+
     for name, card in cards.items():
         if card.card.due.date() > one_year_out:
             entries_to_clean.append(name)
+
     for name in entries_to_clean:
         cards.pop(name)
 
@@ -297,13 +325,17 @@ def optimize():
     """Run the optimizer on your saved data to custom tune scheduler parameters
     to you"""
     # TODO: Improve docstrings
+
     from fsrs import Optimizer
 
     cards, scheduler = load_data()
     # checks to see if cards is empty or 0 prior ot running
+
     if not cards:
         return
+
     all_logs = []
+
     for card in cards.values():
         for log in card.review_logs:
             all_logs.append(ReviewLog.from_json(json.dumps(log)))
@@ -311,7 +343,9 @@ def optimize():
     optimizer = Optimizer(all_logs)
     optimal_parameters = optimizer.compute_optimal_parameters()
     optimal_scheduler = Scheduler(optimal_parameters)
+
     print(optimal_parameters)
+
     for card in cards.values():
         card.card = optimal_scheduler.reschedule_card(
             card.card,
@@ -325,7 +359,9 @@ def optimize():
 def scheduler():
     """Print current scheduler parameters"""
     # TODO: Improve docstrings
+
     cards, scheduler = load_data()
+
     if scheduler is None:
         return
     print(scheduler.parameters)
@@ -336,7 +372,9 @@ def scheduler():
 def retrieve(nametag):
     """Get the retrievability stat of a card"""
     # TODO: Improve docstrings
+
     cards, scheduler = load_data()
+
     if scheduler is None:
         return
     if cards is None:
