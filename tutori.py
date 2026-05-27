@@ -22,6 +22,7 @@ def cli(ctx):
 
     cards, scheduler = load_data()
 
+    #  checks if cards is 0 or None
     if not cards:
         return
     today = date.today()
@@ -38,6 +39,7 @@ def all():
     """View all items stored by Tutori"""
     # TODO: Improve docstrings
     cards, scheduler = load_data()
+    # checks if cards is 0 as well as None
     if not cards:
         return
 
@@ -65,6 +67,7 @@ def upcoming(days_in):
     default is 3"""
     cards, scheduler = load_data()
 
+    # checks if cards is zero or None
     if not cards:
         return
     days_from_today = date.today() + timedelta(days=days_in)
@@ -277,13 +280,15 @@ def clean():
     """Remove entries scheduled further out than one year"""
     cards, scheduler = load_data()
 
-    if not cards:
+    if cards is None:
         return
 
     print("Clean entries?")
     print("Press Y/N to continue")
     choice = input()
     if choice != "Y" and choice != "y":
+        return
+    if len(cards) == 0:
         return
 
     one_year_out = date.today() + timedelta(days=365)
