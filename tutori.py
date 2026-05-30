@@ -215,6 +215,7 @@ def rate(nametag, rating):
         print(f"Answer: {cards[nametag].answer}")
     print(f"Card rated {review_log.rating} on {review_time}")
     print(f"Card next due on {due_date}")
+    # TODO: Make a card next due feature
 
     save_data(cards, scheduler)
 
