@@ -371,7 +371,7 @@ def scheduler():
 
 @cli.command()
 @click.argument("nametag", type=str)
-def retrieve(nametag):
+def stats(nametag):
     """Get the retrievability stat of a card"""
     # TODO: Improve docstrings
 
@@ -385,9 +385,15 @@ def retrieve(nametag):
         print("That's not an entry")
         return
 
-    card_retrievability = scheduler.get_card_retrievability(cards[nametag].card)
+    reps = len(cards[nametag].review_logs)
+    difficulty = cards[nametag].card.difficulty
+    retrievability = scheduler.get_card_retrievability(cards[nametag].card)
+    stability = cards[nametag].card.stability
 
-    print(f"Card retrievability: {card_retrievability}")
+    print(f"Times trained: {reps}")
+    print(f"Card retrievability: {retrievability}")
+    print(f"Card stability: {stability}")
+    print(f"Card difficulty: {difficulty}")
 
 
 cli.add_command(add, name="a")
@@ -395,7 +401,7 @@ cli.add_command(all, name="la")
 cli.add_command(edit, name="e")
 cli.add_command(rate, name="r")
 cli.add_command(remove, name="rm")
-cli.add_command(retrieve, name="ret")
+cli.add_command(stats, name="st")
 cli.add_command(show, name="s")
 cli.add_command(upcoming, name="u")
 
