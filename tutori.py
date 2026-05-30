@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# TODO: Add headers to list all and stats list all
 # TODO: Add types to all command
 # TODO: Add more error checking
 # TODO: Change "entry" or "item" to "card"
